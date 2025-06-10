@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { SessionProvider } from '@/components/providers/session-provider'
+import { ThemeProvider } from '@/components/providers/theme-provider'
 
 export const metadata: Metadata = {
   title: 'FinanceFlow - Personal Finance Tracker',
@@ -20,12 +22,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <body
-        className="h-full antialiased bg-neutral-50 text-neutral-900 font-sans"
+        className="h-full antialiased bg-background text-foreground font-sans"
         suppressHydrationWarning={true}
       >
-        {children}
+        <SessionProvider>
+          <ThemeProvider
+            defaultTheme="system"
+            storageKey="finance-tracker-theme"
+          >
+            {children}
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

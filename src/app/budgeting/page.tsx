@@ -160,44 +160,46 @@ export default function BudgetingPage() {
   	return (
 		<div className="space-y-8">
       			{/* Fixed Header Section */}
-			<div className="sticky top-0 bg-neutral-50 border-b border-neutral-100 pb-6 z-10">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+			<div className="sticky top-0 bg-neutral-50 dark:bg-gray-900 border-b border-neutral-100 dark:border-gray-700 pb-6 z-10">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-black">Budget Planning 2025</h1>
-            <p className="mt-2 text-neutral-600">
+            <h1 className="text-2xl sm:text-3xl font-bold text-black dark:text-white">Budget Planning 2025</h1>
+            <p className="mt-2 text-neutral-600 dark:text-gray-300">
               Plan your yearly finances with precision and clarity
             </p>
           </div>
 
-          <div className="mt-6 sm:mt-0 flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
             <Button
               variant="secondary"
               onClick={() => setShowPrivateValues(!showPrivateValues)}
-              className="border border-neutral-200 hover:border-lime-400 transition-all"
+              className="border border-neutral-200 dark:border-gray-600 hover:border-lime-400 transition-all"
             >
               {showPrivateValues ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
-              {showPrivateValues ? 'Hide Values' : 'Show Values'}
+              <span className="hidden sm:inline">{showPrivateValues ? 'Hide Values' : 'Show Values'}</span>
+              <span className="sm:hidden">{showPrivateValues ? 'Hide' : 'Show'}</span>
             </Button>
             <Button className="bg-lime-400 hover:bg-lime-500 text-black font-medium shadow-lg shadow-lime-400/20">
               <PlusCircle className="h-4 w-4 mr-2" />
-              Add Category
+              <span className="hidden sm:inline">Add Category</span>
+              <span className="sm:hidden">Add</span>
             </Button>
           </div>
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-lime-50 to-lime-100 hover:shadow-xl transition-all duration-300">
-            <CardContent className="p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-lime-50 to-lime-100 dark:from-lime-900/20 dark:to-lime-800/20 hover:shadow-xl transition-all duration-300">
+            <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-lime-700 mb-2">Total Income</p>
-                  <p className="text-2xl font-bold text-black">
+                  <p className="text-sm font-medium text-lime-700 dark:text-lime-300 mb-2">Total Income</p>
+                  <p className="text-xl sm:text-2xl font-bold text-black dark:text-white">
                     {showPrivateValues ? formatCurrency(totalIncome) : '••••••'}
                   </p>
-                  <p className="text-xs text-lime-600 mt-1">Yearly projection</p>
+                  <p className="text-xs text-lime-600 dark:text-lime-400 mt-1">Yearly projection</p>
                 </div>
-                <div className="p-3 bg-lime-400/30 rounded-2xl">
+                <div className="p-3 bg-lime-400/30 dark:bg-lime-400/20 rounded-2xl">
                   <TrendingUp className="h-6 w-6 text-lime-700" />
                 </div>
               </div>

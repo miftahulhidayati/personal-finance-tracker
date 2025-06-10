@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import {
 	ResponsiveContainer,
 	BarChart,
@@ -26,6 +26,30 @@ interface ChartProps {
 
 // Color palette
 const COLORS = ['#c6ef4e', '#8dd3c7', '#ffffb3', '#bebada', '#fb8072', '#80b1d3', '#fdb462', '#b3de69']
+
+// Enhanced tooltip component for real-time data
+const CustomTooltip = ({ active, payload, label, formatter }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
+        <p className="font-medium text-gray-900">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} className="text-sm" style={{ color: entry.color }}>
+            {`${entry.name}: ${formatter ? formatter(entry.value) : formatCurrency(entry.value, 'Rp')}`}
+          </p>
+        ))}
+        {payload.length > 1 && (
+          <div className="border-t border-gray-100 mt-2 pt-2">
+            <p className="text-xs text-gray-500">
+              Last updated: {new Date().toLocaleTimeString()}
+            </p>
+          </div>
+        )}
+      </div>
+    )
+  }
+  return null
+}
 
 export function IncomeVsExpensesChart({ period }: ChartProps) {
 	const { expenses, monthlyIncome, historicalData } = useFinanceStore()
@@ -104,8 +128,7 @@ export function IncomeVsExpensesChart({ period }: ChartProps) {
 				<XAxis dataKey="month" />
 				<YAxis tickFormatter={(value) => formatCurrency(value)} />
 				<Tooltip 
-					formatter={(value: number) => formatCurrency(value)}
-					labelStyle={{ color: '#374151' }}
+					content={<CustomTooltip formatter={(value: number) => formatCurrency(value, 'Rp')} />}
 				/>
 				<Legend />
 				<Bar dataKey="income" fill="#c6ef4e" name="Pemasukan" />

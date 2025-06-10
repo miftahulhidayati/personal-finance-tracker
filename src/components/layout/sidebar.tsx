@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import {
 	LayoutDashboard,
 	PiggyBank,
@@ -52,6 +53,7 @@ const navigationItems = [
 
 export function Sidebar({ isOpen, onToggle, isCollapsed, onCollapseToggle }: SidebarProps) {
 	const pathname = usePathname();
+	const { data: session } = useSession();
 
 	return (
 		<>
@@ -66,19 +68,19 @@ export function Sidebar({ isOpen, onToggle, isCollapsed, onCollapseToggle }: Sid
 			{/* Sidebar */}
 			<div
 				className={`
-					fixed left-0 top-0 z-50 h-full bg-white border-r border-neutral-200 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-auto
+					fixed left-0 top-0 z-50 h-full bg-white dark:bg-gray-900 border-r border-neutral-200 dark:border-gray-700 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-auto
 					${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
 					${isCollapsed ? 'w-20' : 'w-72'}
 				`}
 			>
 				{/* Header */}
-				<div className="flex items-center justify-between p-6 border-b border-neutral-100">
+				<div className="flex items-center justify-between p-6 border-b border-neutral-100 dark:border-gray-700">
 					<div className="flex items-center space-x-3 overflow-hidden">
 						<div className="w-8 h-8 bg-lime-500 rounded-xl flex items-center justify-center flex-shrink-0">
 							<span className="text-neutral-900 font-bold text-sm">F</span>
 						</div>
 						{!isCollapsed && (
-							<h1 className="text-xl font-bold text-neutral-900 whitespace-nowrap">FinanceFlow</h1>
+							<h1 className="text-xl font-bold text-neutral-900 dark:text-white whitespace-nowrap">FinanceFlow</h1>
 						)}
 					</div>
 
@@ -156,22 +158,25 @@ export function Sidebar({ isOpen, onToggle, isCollapsed, onCollapseToggle }: Sid
 				</nav>
 
 				{/* User Profile Section */}
-				<div className="absolute bottom-0 left-0 right-0 p-4 border-t border-neutral-100 bg-white">
-					<div className={`flex items-center p-3 bg-neutral-50 rounded-xl hover:bg-neutral-100 transition-colors cursor-pointer ${isCollapsed ? 'justify-center' : 'space-x-3'}`}>
+				<div className="absolute bottom-0 left-0 right-0 p-4 border-t border-neutral-100 dark:border-gray-700 bg-white dark:bg-gray-900">
+					<Link
+						href="/profile"
+						className={`flex items-center p-3 bg-neutral-50 rounded-xl hover:bg-neutral-100 transition-colors cursor-pointer ${isCollapsed ? 'justify-center' : 'space-x-3'}`}
+					>
 						<div className="w-10 h-10 bg-lime-500 rounded-full flex items-center justify-center flex-shrink-0">
 							<User className="w-5 h-5 text-neutral-900" />
 						</div>
 						{!isCollapsed && (
 							<div className="flex-1 min-w-0">
 								<p className="text-sm font-medium text-neutral-900 truncate">
-									John Doe
+									{session?.user?.name || 'User'}
 								</p>
 								<p className="text-xs text-neutral-500 truncate">
-									john@example.com
+									{session?.user?.email || 'No email'}
 								</p>
 							</div>
 						)}
-					</div>
+					</Link>
 				</div>
 			</div>
 		</>

@@ -74,3 +74,25 @@ export const CardContent: React.FC<CardContentProps> = ({ children, className })
     {children}
   </div>
 );
+
+interface CardDescriptionProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const CardDescription: React.FC<CardDescriptionProps> = ({ children, className }) => (
+  <p className={clsx('text-sm text-gray-600 mt-1', className)}>
+    {children}
+  </p>
+);
+
+interface CardFooterProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const CardFooter: React.FC<CardFooterProps> = ({ children, className }) => (
+  <div className={clsx('mt-4 pt-4 border-t border-gray-200', className)}>
+    {children}
+  </div>
+);

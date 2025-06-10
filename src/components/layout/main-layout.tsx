@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Sidebar } from './sidebar';
-import { TopBar } from './top-bar';
-import { ErrorBoundary } from './error-boundary';
+import React, { useState, useEffect } from 'react'
+import { Sidebar } from './sidebar'
+import { TopBar } from './top-bar'
+import { ErrorBoundary } from './error-boundary'
 
 interface MainLayoutProps {
-	children: React.ReactNode;
+	children: React.ReactNode
 }
 
 /**
@@ -18,33 +18,33 @@ interface MainLayoutProps {
  * @returns The main layout wrapper component
  */
 export function MainLayout({ children }: MainLayoutProps) {
-	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+	const [sidebarOpen, setSidebarOpen] = useState(false)
+	const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
 	// Load sidebar collapsed state from localStorage on mount
 	useEffect(() => {
-		const savedCollapsed = localStorage.getItem('sidebar-collapsed');
+		const savedCollapsed = localStorage.getItem('sidebar-collapsed')
 		if (savedCollapsed !== null) {
-			setSidebarCollapsed(JSON.parse(savedCollapsed));
+			setSidebarCollapsed(JSON.parse(savedCollapsed))
 		}
-	}, []);
+	}, [])
 
 	// Save sidebar collapsed state to localStorage
 	useEffect(() => {
-		localStorage.setItem('sidebar-collapsed', JSON.stringify(sidebarCollapsed));
-	}, [sidebarCollapsed]);
+		localStorage.setItem('sidebar-collapsed', JSON.stringify(sidebarCollapsed))
+	}, [sidebarCollapsed])
 
 	const toggleSidebar = () => {
-		setSidebarOpen(!sidebarOpen);
-	};
+		setSidebarOpen(!sidebarOpen)
+	}
 
 	const toggleSidebarCollapse = () => {
-		setSidebarCollapsed(!sidebarCollapsed);
-	};
+		setSidebarCollapsed(!sidebarCollapsed)
+	}
 
 	return (
 		<ErrorBoundary>
-			<div className="h-full flex bg-neutral-50">
+			<div className="h-full flex bg-background">
 				{/* Sidebar */}
 				<Sidebar
 					isOpen={sidebarOpen}
@@ -67,5 +67,5 @@ export function MainLayout({ children }: MainLayoutProps) {
 				</div>
 			</div>
 		</ErrorBoundary>
-	);
+	)
 }

@@ -68,6 +68,24 @@ interface FinanceState {
 
   // Settings actions
   updateSettings: (settings: Settings) => Promise<void>;
+
+  // Auto-refresh configuration
+  autoRefreshInterval: NodeJS.Timeout | null;
+  isAutoRefreshEnabled: boolean;
+  lastRefreshTime: Date | null;
+
+  // Enable/disable auto-refresh
+  setAutoRefresh: (enabled: boolean, intervalMinutes?: number) => void;
+
+  // Simulate real-time updates (for demo purposes)
+  simulateRealTimeUpdate: () => void;
+
+  // Get refresh status
+  getRefreshStatus: () => {
+    isAutoRefreshEnabled: boolean;
+    lastRefreshTime: Date | null;
+    nextRefreshIn: number | null;
+  };
 }
 
 export const useFinanceStore = create<FinanceState>((set, get) => ({
@@ -89,6 +107,11 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
   isLoading: false,
   isUpdating: false,
   error: null,
+
+  // Auto-refresh properties
+  autoRefreshInterval: null,
+  isAutoRefreshEnabled: false,
+  lastRefreshTime: null,
 
   // Set current month/year
   setCurrentMonth: (month: number, year: number) => {
@@ -573,5 +596,73 @@ export const useFinanceStore = create<FinanceState>((set, get) => ({
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-  }
+  },
+
+  // Enable/disable auto-refresh
+  setAutoRefresh: (enabled: boolean, intervalMinutes: number = 5) => {
+    const state = get()
+    
+    // Clear existing interval
+    if (state.autoRefreshInterval) {
+      clearInterval(state.autoRefreshInterval)
+    }
+
+    if (enabled) {
+      const interval = setInterval(() => {
+        get().loadData()
+        set({ lastRefreshTime: new Date() })
+      }, intervalMinutes * 60 * 1000)
+
+      set({ 
+        autoRefreshInterval: interval,
+        isAutoRefreshEnabled: true,
+        lastRefreshTime: new Date()
+      })
+    } else {
+      set({ 
+        autoRefreshInterval: null,
+        isAutoRefreshEnabled: false 
+      })
+    }
+  },
+
+  // Simulate real-time updates (for demo purposes)
+  simulateRealTimeUpdate: () => {
+    const state = get()
+    
+    // Simulate a new expense transaction
+    const categories = ['Food & Dining', 'Transportation', 'Shopping', 'Entertainment']
+    const currentDate = new Date()
+    const demoExpense: Expense = {
+      id: `demo-${Date.now()}`,
+      amount: Math.floor(Math.random() * 100000) + 10000, // Random amount between 10k-110k
+      category: categories[Math.floor(Math.random() * categories.length)] || 'Other',
+      description: 'Real-time update simulation',
+      date: currentDate.toISOString().split('T')[0] || currentDate.toDateString(),
+      account: 'Demo Account',
+      month: currentDate.getMonth() + 1,
+      year: currentDate.getFullYear()
+    }
+
+    // Add to expenses (limit to prevent memory issues)
+    const updatedExpenses = [demoExpense, ...state.expenses].slice(0, 100)
+    
+    set({ 
+      expenses: updatedExpenses,
+      lastRefreshTime: new Date()
+    })
+
+    // Show notification-like feedback
+    console.log('💰 New transaction added:', demoExpense)
+  },
+
+  // Get refresh status
+  getRefreshStatus: () => {
+    const state = get()
+    return {
+      isAutoRefreshEnabled: state.isAutoRefreshEnabled,
+      lastRefreshTime: state.lastRefreshTime,
+      nextRefreshIn: state.autoRefreshInterval ? 5 * 60 * 1000 : null // 5 minutes in ms
+    }
+  },
 }));

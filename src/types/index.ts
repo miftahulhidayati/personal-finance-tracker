@@ -238,6 +238,34 @@ export interface ChartData {
   percentage?: number;
 }
 
+// Authentication types
+export interface User {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  createdAt?: string;
+  preferences?: UserPreferences;
+}
+
+export interface UserPreferences {
+  theme: 'light' | 'dark' | 'system';
+  currency: string;
+  language: string;
+  notifications: {
+    email: boolean;
+    push: boolean;
+    budget: boolean;
+    goals: boolean;
+  };
+}
+
+export interface AuthState {
+  user: User | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+}
+
 export interface SpreadsheetConfig {
   spreadsheetId: string;
   apiKey: string;

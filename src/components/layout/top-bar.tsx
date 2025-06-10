@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import {
   Menu,
   Search,
@@ -10,17 +11,24 @@ import {
   LogOut,
   HelpCircle
 } from 'lucide-react';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import Link from 'next/link';
 
 interface TopBarProps {
   onMenuToggle: () => void;
 }
 
 export function TopBar({ onMenuToggle }: TopBarProps) {
+  const { data: session } = useSession();
   const [showUserMenu, setShowUserMenu] = React.useState(false);
   const [showNotifications, setShowNotifications] = React.useState(false);
 
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: '/auth/signin' });
+  };
+
   return (
-    <header className="bg-white border-b border-neutral-200 px-4 lg:px-6 py-4">
+    <header className="bg-white dark:bg-gray-900 border-b border-neutral-200 dark:border-gray-700 px-4 lg:px-6 py-4">
       <div className="flex items-center justify-between">
         {/* Left side */}
         <div className="flex items-center space-x-4">
@@ -33,17 +41,20 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
 
           {/* Search */}
           <div className="hidden md:flex relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400 dark:text-gray-500" />
             <input
               type="text"
               placeholder="Search transactions, categories..."
-              className="input pl-10 pr-4 py-2 w-64 text-sm"
+              className="input pl-10 pr-4 py-2 w-64 text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
             />
           </div>
         </div>
 
         {/* Right side */}
         <div className="flex items-center space-x-3">
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
           {/* Search button for mobile */}
           <button className="md:hidden p-2 rounded-xl hover:bg-neutral-100 transition-colors">
             <Search className="w-5 h-5 text-neutral-600" />
@@ -102,8 +113,12 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
                 <User className="w-4 h-4 text-neutral-900" />
               </div>
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium text-neutral-900">John Doe</p>
-                <p className="text-xs text-neutral-500">Premium</p>
+                <p className="text-sm font-medium text-neutral-900">
+                  {session?.user?.name || 'User'}
+                </p>
+                <p className="text-xs text-neutral-500">
+                  {session?.user?.email || 'No email'}
+                </p>
               </div>
             </button>
 
@@ -116,21 +131,25 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
                       <User className="w-5 h-5 text-neutral-900" />
                     </div>
                     <div>
-                      <p className="font-medium text-neutral-900">John Doe</p>
-                      <p className="text-sm text-neutral-500">john@example.com</p>
+                      <p className="font-medium text-neutral-900">
+                        {session?.user?.name || 'User'}
+                      </p>
+                      <p className="text-sm text-neutral-500">
+                        {session?.user?.email || 'No email'}
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 <div className="p-2 space-y-1">
-                  <button className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-neutral-50 transition-colors text-left">
+                  <Link href="/profile" className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-neutral-50 transition-colors text-left">
                     <User className="w-4 h-4 text-neutral-600" />
                     <span className="text-sm text-neutral-700">Profile</span>
-                  </button>
-                  <button className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-neutral-50 transition-colors text-left">
+                  </Link>
+                  <Link href="/settings" className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-neutral-50 transition-colors text-left">
                     <Settings className="w-4 h-4 text-neutral-600" />
                     <span className="text-sm text-neutral-700">Settings</span>
-                  </button>
+                  </Link>
                   <button className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-neutral-50 transition-colors text-left">
                     <HelpCircle className="w-4 h-4 text-neutral-600" />
                     <span className="text-sm text-neutral-700">Help & Support</span>
@@ -138,7 +157,10 @@ export function TopBar({ onMenuToggle }: TopBarProps) {
                 </div>
 
                 <div className="p-2 border-t border-neutral-100">
-                  <button className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-red-50 transition-colors text-left group">
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-red-50 transition-colors text-left group"
+                  >
                     <LogOut className="w-4 h-4 text-neutral-600 group-hover:text-red-600" />
                     <span className="text-sm text-neutral-700 group-hover:text-red-600">Sign out</span>
                   </button>
